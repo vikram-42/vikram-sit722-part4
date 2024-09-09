@@ -1,1 +1,48 @@
-# Your Solution
+version: '3'
+services:
+
+  book_catalog:
+    image: book_catalog
+    build: 
+      context: ./book_catalog
+      dockerfile: Dockerfile
+    container_name: book_catalog
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+      - DATABASE_URL=postgresql://library_db_cnml_user:Q55gYOK5Ii9MndgSy14QhWjUs5dgmGob@dpg-crf9t0qj1k6c73dj8fq0-a.oregon-postgres.render.com/library_db_cnml
+    restart: "no"
+    depends_on:
+      - db
+
+  inventory_management:
+    image: inventory_management
+    build: 
+      context: ./inventory_management
+      dockerfile: Dockerfile
+    container_name: inventory_management
+    ports:
+      - "8001:8001"
+    environment:
+      - PORT=8001
+      - DATABASE_URL=postgresql://library_db_cnml_user:Q55gYOK5Ii9MndgSy14QhWjUs5dgmGob@dpg-crf9t0qj1k6c73dj8fq0-a.oregon-postgres.render.com/library_db_cnml
+    restart: "no"
+    depends_on:
+      - db
+
+  db:
+    image: postgres:13
+    container_name: postgres
+    environment:
+      POSTGRES_DB: library_db_cnml
+      POSTGRES_USER: library_db_cnml_user
+      POSTGRES_PASSWORD: UR4gum8FTpuYr7xGARal3HPXH24C7UMf
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: "no"
+
+volumes:
+  postgres_data:
